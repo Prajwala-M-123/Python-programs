@@ -1,0 +1,79 @@
+class Machine:
+    def __init__(self, name):
+        self.name = name
+        self.temp_threshold = 0
+        self.vibration_threshold = 0
+        self.usage_threshold = 0
+
+    def set_thresholds(self):
+        """Allow user to set thresholds for the machine."""
+        print(f"\nSet Thresholds for {self.name}")
+        try:
+            self.temp_threshold = float(input(f"Enter the temperature threshold for {self.name} (in Celsius): "))
+            self.vibration_threshold = float(input(f"Enter the vibration threshold for {self.name}: "))
+            self.usage_threshold = int(input(f"Enter the usage hours threshold for {self.name}: "))
+        except ValueError:
+            print("Invalid input. Please enter valid numbers.")
+
+    def predict_maintenance(self, temperature, vibration, usage_hours):
+        """Predict if maintenance is needed based on the thresholds."""
+        if temperature > self.temp_threshold or vibration > self.vibration_threshold or usage_hours > self.usage_threshold:
+            return f"Maintenance Needed for {self.name}: The equipment requires maintenance due to abnormal readings."
+        else:
+            return f"No Maintenance Needed for {self.name}: The equipment is functioning normally."
+
+
+def get_user_input(machines):
+    """Get sensor input for multiple machines."""
+    try:
+        # Choose a machine to monitor
+        print("\nSelect a machine to monitor:")
+        for i, machine in enumerate(machines):
+            print(f"{i + 1}. {machine.name}")
+
+        machine_choice = int(input("Enter the number of the machine to monitor: ")) - 1
+        if machine_choice < 0 or machine_choice >= len(machines):
+            print("Invalid choice. Please select a valid machine.")
+            return
+
+        # Get the selected machine
+        selected_machine = machines[machine_choice]
+
+        # Get sensor data for the selected machine
+        print(f"\nEnter the current sensor readings for {selected_machine.name}.")
+        temperature = float(input("Enter the current temperature of the equipment (in Celsius): "))
+        vibration = float(input("Enter the current vibration level of the equipment: "))
+        usage_hours = int(input("Enter the total usage hours of the equipment: "))
+        
+        # Predict maintenance need for the selected machine
+        result = selected_machine.predict_maintenance(temperature, vibration, usage_hours)
+        print(result)
+        
+    except ValueError:
+        print("Invalid input. Please enter valid numbers.")
+
+# Main function to run the system
+if __name__ == "__main__":
+    print("Welcome to the Predictive Maintenance System!\n")
+
+    # Create machines and set thresholds
+    machine1 = Machine("Machine A")
+    machine1.set_thresholds()
+
+    machine2 = Machine("Machine B")
+    machine2.set_thresholds()
+
+    machine3 = Machine("Machine C")
+    machine3.set_thresholds()
+
+    # Store machines in a list
+    machines = [machine1, machine2, machine3]
+
+    while True:
+        get_user_input(machines)  # Continuously accept user input
+        
+        # Ask the user if they want to check again
+        another_check = input("\nDo you want to check again? (y/n): ")
+        if another_check.lower() != 'y':
+            print("Exiting the Predictive Maintenance System. Goodbye!")
+            break
